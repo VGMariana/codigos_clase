@@ -106,3 +106,11 @@ def compute_beta(ric, benchmark, bool_print=False):
         print(capm)
     beta = capm.beta
     return beta
+
+
+def cost_function_beta_delta(x, delta, beta_usd, betas, epsilon=0.0):
+    f_delta = (sum(x).item() + delta)**2
+    f_beta = (np.transpose(betas).dot(x).item() + beta_usd)**2
+    f_penalty = epsilon * sum(x**2).item()
+    f = f_delta + f_beta + f_penalty
+    return f

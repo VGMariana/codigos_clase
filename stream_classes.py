@@ -12,6 +12,7 @@ import scipy
 import importlib
 import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis, chi2, linregress
+from scipy.optimize import minimize
 
 # import our own files and reload
 import stream_functions
@@ -205,26 +206,28 @@ class capm_manager():
         
 class hedge_manager():
     
-    def __init__(self, ric, benchmark, hedge_rics, target_delta):
+    def __init__(self, ric, benchmark, hedge_rics, delta):
         self.ric = ric
         self.benchmark = benchmark
         self.hedge_rics = hedge_rics
-        self.delta = target_delta
+        self.delta = delta
+        self.beta = None
+        self.beta_usd = None
         self.dataframe = pd.DataFrame()
         self.hedge_delta = None
         self.hedge_beta_usd = None
+        self.betas = []
+        self.optimal_hedge = []
         
         
     def load_inputs(self, bool_print=False):
-        # portfolio input
         self.beta = stream_functions.compute_beta(self.ric, self.benchmark)
         self.beta_usd = self.beta*self.delta
-        # hedge input
-        hedge_betas = [stream_functions.compute_beta(hedge_ric, self.benchmark) \
+        betas = [stream_functions.compute_beta(hedge_ric, self.benchmark) \
                        for hedge_ric in self.hedge_rics]
+        self.betas = np.asarray(betas).reshape([len(self.hedge_rics),1])
         self.dataframe['ric'] = self.hedge_rics
-        self.dataframe['beta'] = hedge_betas
-        # print inputs
+        self.dataframe['beta'] = self.betas
         if bool_print:
             print('------')
             print('Input portfolio:')
@@ -236,23 +239,29 @@ class hedge_manager():
             for n in range(self.dataframe.shape[0]):
                 print('Beta for hedge[' + str(n) + '] = ' + self.dataframe['ric'][n] \
                       + ' vs ' + self.benchmark + ' is ' + str(self.dataframe['beta'][n]))
-             
+
                     
-    def compute(self, bool_print=False):
-        shape = [len(self.hedge_rics),1]
-        betas = np.asarray(self.dataframe['beta']).reshape(shape)
-        deltas = np.ones(shape)
+    def compute_exact(self, bool_print=False):
+        size = len(self.hedge_rics)
+        if not size == 2:
+            print('------')
+            print('Warning: cannot compute exact solution, hedge_rics size ' + str(size) + ' =/= 2')
+            return
+        deltas = np.ones([size,1])
         targets = -np.array([[self.delta],[self.beta_usd]])
-        mtx = np.transpose(np.column_stack((deltas,betas)))
-        optimal_hedge = np.linalg.inv(mtx).dot(targets)
-        self.dataframe['delta'] = optimal_hedge
-        self.dataframe['beta_usd'] = betas*optimal_hedge
+        mtx = np.transpose(np.column_stack((deltas,self.betas)))
+        self.optimal_hedge = np.linalg.inv(mtx).dot(targets)
+        self.dataframe['delta'] = self.optimal_hedge
+        self.dataframe['beta_usd'] = self.betas*self.optimal_hedge
         self.hedge_delta = np.sum(self.dataframe['delta'])
         self.hedge_beta_usd = np.sum(self.dataframe['beta_usd'])
-        # print result
         if bool_print:
+            self.print_output('Exact solution from linear algebra')
+            
+
+    def print_output(self, optimisation_type):
             print('------')
-            print('Optimisation result')
+            print('Optimisation result | ' + optimisation_type + ':')
             print('------')
             print('Delta: ' + str(self.delta))
             print('Beta USD: ' + str(self.beta_usd))
@@ -261,7 +270,21 @@ class hedge_manager():
             print('Hedge beta USD: ' + str(self.hedge_beta_usd))
             print('------')
             print('Betas for the hedge:')
-            print(betas)
+            print(self.betas)
             print('------')
             print('Optimal hedge:')
-            print(optimal_hedge)
+            print(self.optimal_hedge)
+            
+
+    def compute_numerical(self, epsilon=0.0, bool_print=False):
+        x = np.zeros([len(self.betas),1])
+        args = (self.delta, self.beta_usd, self.betas, epsilon)
+        optimal_result = minimize(fun=stream_functions.cost_function_beta_delta,\
+                                  x0=x, args=args, method='BFGS')
+        self.optimal_hedge = optimal_result.x.reshape([len(self.betas),1])
+        self.dataframe['delta'] = self.optimal_hedge
+        self.dataframe['beta_usd'] = self.betas*self.optimal_hedge
+        self.hedge_delta = np.sum(self.dataframe['delta'])
+        self.hedge_beta_usd = np.sum(self.dataframe['beta_usd'])
+        if bool_print:
+            self.print_output('Numerical solution with optimize.minimize')

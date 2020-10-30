@@ -24,19 +24,22 @@ importlib.reload(stream_classes)
 # input parameters
 ric = 'BBVA.MC'
 benchmark = '^STOXX50E'
-hedge_rics =  ['SAN.MC','REP.MC']
+# hedge_rics =  ['SAN.MC','REP.MC']
 # hedge_rics = ['BBVA.MC','REP.MC']
 # hedge_rics = ['SAN.MC','DBKGn.DE']
 # hedge_rics = ['^FCHI','^GDAXI']
 # hedge_rics = ['^STOXX','SAN.MC']
 # hedge_rics = ['^S&P500','^NASDAQ']
 # hedge_rics = ['^STOXX50E','^NASDAQ']
+hedge_rics = ['SAN.MC','^FCHI','^GDAXI']
+# hedge_rics = ['SAN.MC']
 delta = 10
 
 # compute optimal hedge
 hedger = stream_classes.hedge_manager(ric, benchmark, hedge_rics, delta)
 hedger.load_inputs(bool_print=True)
-hedger.compute(bool_print=True)
+# hedger.compute_exact(bool_print=True)
+hedger.compute_numerical(epsilon=0.01, bool_print=True)
 optimal_hedge = hedger.dataframe
 
       
