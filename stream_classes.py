@@ -347,7 +347,7 @@ class portfolio_manager:
         
         if bool_print:
             print('-----')
-            print('Portfolio_manager details:')
+            print('Portfolio Manager details:')
             print('Securities:')
             print(self.rics)
             print('Returns (annualised):')
@@ -378,6 +378,18 @@ class portfolio_manager:
             port_item.weights = port_pca
             port_item.variance_explained = variance_explained
             
+        elif portfolio_type == 'long-only':
+            size = len(self.rics)
+            port_long_only = stream_functions.compute_portfolio_long_only(size, notional, self.covariance_matrix)
+            port_item.type = 'long-only'
+            port_item.weights = port_long_only
+            
+        else:
+            size = len(self.rics)
+            port_equi = stream_functions.compute_portfolio_equi_weight(size, notional)
+            port_item.type = 'equi-weight'
+            port_item.weights = port_equi
+               
         port_item.delta = sum(port_item.weights)
         port_item.pnl_annual = np.dot(port_item.weights.T,self.returns).item()
         port_item.return_annual = port_item.pnl_annual / notional

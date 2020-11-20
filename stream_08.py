@@ -30,12 +30,12 @@ print('inputs:')
 print('nb_decimals ' + str(nb_decimals))
 print('notional ' + str(notional))
 
-rics = ['SAN.MC',\
-        'BBVA.MC',\
-        'SOGN.PA',\
-        'BNPP.PA',\
-        'INGA.AS',\
-        'KBC.BR']
+# rics = ['SAN.MC',\
+#         'BBVA.MC',\
+#         'SOGN.PA',\
+#         'BNPP.PA',\
+#         'INGA.AS',\
+#         'KBC.BR']
 # rics = ['MXNUSD=X',\
 #         'EURUSD=X',\
 #         'GBPUSD=X',\
@@ -58,13 +58,13 @@ rics = ['SAN.MC',\
 #         '^VIX']
 # rics = ['SAN.MC',\
 #         'BBVA.MC']
-# rics = ['SGREN.MC',\
-#         'VWS.CO',\
-#         'TOTF.PA',\
-#         'REP.MC',\
-#         'BP.L',\
-#         'RDSa.AS',\
-#         'RDSa.L']
+rics = ['SGREN.MC',\
+        'VWS.CO',\
+        'TOTF.PA',\
+        'REP.MC',\
+        'BP.L',\
+        'RDSa.AS',\
+        'RDSa.L']
 # rics = ['AAL.L',\
 #         'ANTO.L',\
 #         'GLEN.L',\
@@ -85,6 +85,10 @@ portfolio_pca.summary()
 
 # compute default portfolio, which is equi-weight
 portfolio_equiweight = port_mgr.compute_portfolio('default', notional)
+portfolio_equiweight.summary()
+
+# compute long-only portfolio with minimal variance
+portfolio_equiweight = port_mgr.compute_portfolio('long-only', notional)
 portfolio_equiweight.summary()
 
 

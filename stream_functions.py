@@ -134,11 +134,33 @@ def compute_portfolio_pca(covariance_matrix, notional):
     return port_pca, variance_explained
 
 
+def compute_portfolio_equi_weight(size, notional):
+    port_equi = (notional / size) * np.ones([size])
+    return port_equi
+
+
+def compute_portfolio_long_only(size, notional, covariance_matrix):
+    # initialise optimisation
+    x = np.zeros([size,1])
+    # initialise constraints
+    cons = [{"type": "eq", "fun": lambda x: sum(abs(x)) - 1}]
+    bnds = [(0, None) for i in range(size)]
+    # compute optimisation
+    res = minimize(compute_portfolio_variance, x, args=(covariance_matrix), constraints=cons, bounds=bnds)
+    port_long_only = notional * res.x
+    return port_long_only
+
+
+def compute_portfolio_variance(x, covariance_matrix):
+    variance = np.dot(x.T, np.dot(covariance_matrix, x)).item()
+    return variance
+
+
 def compute_portfolio_volatility(covariance_matrix, weights):
     notional = sum(abs(weights))
     if notional <= 0.0:
         return 0.0
-    weights = weights / sum(abs(weights))
+    weights = weights / notional # unitary weights in the L1-norm
     variance = np.dot(weights.T, np.dot(covariance_matrix, weights)).item()
     if variance <= 0.0:
         return 0.0
