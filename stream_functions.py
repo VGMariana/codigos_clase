@@ -151,6 +151,19 @@ def compute_portfolio_long_only(size, notional, covariance_matrix):
     return port_long_only
 
 
+def compute_portfolio_markowitz(size, notional, covariance_matrix, returns, target_return):
+    # initialise optimisation
+    x = np.zeros([size,1])
+    # initialise constraints
+    cons = [{"type": "eq", "fun": lambda x: np.transpose(returns).dot(x).item() - target_return},\
+            {"type": "eq", "fun": lambda x: sum(abs(x)) - 1}]
+    bnds = [(0, None) for i in range(size)]
+    # compute optimisation
+    res = minimize(compute_portfolio_variance, x, args=(covariance_matrix), constraints=cons, bounds=bnds)
+    weights = notional * res.x
+    return weights
+
+
 def compute_portfolio_variance(x, covariance_matrix):
     variance = np.dot(x.T, np.dot(covariance_matrix, x)).item()
     return variance

@@ -360,8 +360,9 @@ class portfolio_manager:
             print(self.correlation_matrix)
             
             
-    def compute_portfolio(self, portfolio_type, notional):
+    def compute_portfolio(self, portfolio_type, notional, target_return=None):
         
+        size = len(self.rics)
         port_item = portfolio_item(self.rics, notional)
         
         if portfolio_type == 'min-variance':
@@ -379,17 +380,25 @@ class portfolio_manager:
             port_item.variance_explained = variance_explained
             
         elif portfolio_type == 'long-only':
-            size = len(self.rics)
             port_long_only = stream_functions.compute_portfolio_long_only(size, notional, self.covariance_matrix)
             port_item.type = 'long-only'
             port_item.weights = port_long_only
+            
+        elif portfolio_type == 'markowitz':
+            if target_return == None:
+                target_return = np.mean(self.returns) #annualised
+            port_markowitz = stream_functions.compute_portfolio_markowitz(size, notional, self.covariance_matrix,\
+                                                                   self.returns, target_return)
+            port_item.type = 'markowitz | target return ' + str(target_return) 
+            port_item.weights = port_markowitz
+            port_item.target_return = target_return
             
         else:
             size = len(self.rics)
             port_equi = stream_functions.compute_portfolio_equi_weight(size, notional)
             port_item.type = 'equi-weight'
             port_item.weights = port_equi
-               
+        
         port_item.delta = sum(port_item.weights)
         port_item.pnl_annual = np.dot(port_item.weights.T,self.returns).item()
         port_item.return_annual = port_item.pnl_annual / notional
@@ -424,14 +433,16 @@ class portfolio_item():
         print(self.rics)
         print('Weights:')
         print(self.weights)
+        if not self.variance_explained == None:
+            print('Variance explained: ' + str(self.variance_explained))
         print('Notional (mnUSD): ' + str(self.notional))
         print('Delta (mnUSD): ' + str(self.delta))
         print('PnL annual (mnUSD): ' + str(self.pnl_annual))
         print('Return annual (mnUSD): ' + str(self.return_annual))
-        print('Volatility annual (mnUSD): ' + str(self.volatility_annual))
-        print('Sharpe ratio annual: ' + str(self.sharpe_annual))
-        if not self.variance_explained == None:
-            print('Variance explained: ' + str(self.variance_explained))
         if not self.target_return == None:
             print('Target Return: ' + str(self.target_return))
+        print('Volatility annual (mnUSD): ' + str(self.volatility_annual))
+        print('Sharpe ratio annual: ' + str(self.sharpe_annual))
+
+
         

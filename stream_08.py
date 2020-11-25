@@ -58,18 +58,18 @@ print('notional ' + str(notional))
 #         '^VIX']
 # rics = ['SAN.MC',\
 #         'BBVA.MC']
-rics = ['SGREN.MC',\
-        'VWS.CO',\
-        'TOTF.PA',\
-        'REP.MC',\
-        'BP.L',\
-        'RDSa.AS',\
-        'RDSa.L']
-# rics = ['AAL.L',\
-#         'ANTO.L',\
-#         'GLEN.L',\
-#         'MT.AS',\
-#         'RIO.L']
+# rics = ['SGREN.MC',\
+#         'VWS.CO',\
+#         'TOTF.PA',\
+#         'REP.MC',\
+#         'BP.L',\
+#         'RDSa.AS',\
+#         'RDSa.L']
+rics = ['AAL.L',\
+        'ANTO.L',\
+        'GLEN.L',\
+        'MT.AS',\
+        'RIO.L']
 
 # compute covariance matrix
 port_mgr = stream_classes.portfolio_manager(rics, nb_decimals)
@@ -90,5 +90,10 @@ portfolio_equiweight.summary()
 # compute long-only portfolio with minimal variance
 portfolio_equiweight = port_mgr.compute_portfolio('long-only', notional)
 portfolio_equiweight.summary()
+
+# compute long-only Markowitz portfolio
+portfolio_markowitz = port_mgr.compute_portfolio('markowitz', notional, target_return=0.20)
+portfolio_markowitz.summary()
+
 
 
