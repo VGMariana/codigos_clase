@@ -90,7 +90,7 @@ port = port_mgr.compute_portfolio(label2, notional)
 x2 = port.volatility_annual
 y2 = port.return_annual
 # yellow
-label3 = 'equi-weight' # 'min-variance'
+label3 = 'equi-weight' # 'equi-weight'
 port = port_mgr.compute_portfolio(label3, notional)
 x3 = port.volatility_annual
 y3 = port.return_annual
