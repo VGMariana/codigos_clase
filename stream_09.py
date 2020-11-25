@@ -85,7 +85,7 @@ port = port_mgr.compute_portfolio('markowitz', notional)
 x1 = port.volatility_annual
 y1 = port.return_annual
 # red
-label2 = 'long-only' # 'long-only'
+label2 = 'long-only' # 'long-only' 'min-variance'
 port = port_mgr.compute_portfolio(label2, notional)
 x2 = port.volatility_annual
 y2 = port.return_annual
