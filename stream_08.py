@@ -40,16 +40,16 @@ print('notional ' + str(notional))
 #         'EURUSD=X',\
 #         'GBPUSD=X',\
 #         'CHFUSD=X']
-# rics = ['SAN.MC',\
-#         'BBVA.MC',\
-#         'SOGN.PA',\
-#         'BNPP.PA',\
-#         'INGA.AS',\
-#         'KBC.BR',\
-#         'CRDI.MI',\
-#         'ISP.MI',\
-#         'DBKGn.DE',\
-#         'CBKG.DE']
+rics = ['SAN.MC',\
+        'BBVA.MC',\
+        'SOGN.PA',\
+        'BNPP.PA',\
+        'INGA.AS',\
+        'KBC.BR',\
+        'CRDI.MI',\
+        'ISP.MI',\
+        'DBKGn.DE',\
+        'CBKG.DE']
 # rics = ['SAN.MC',\
 #         'BBVA.MC',\
 #         'SOGN.PA',\
@@ -65,11 +65,11 @@ print('notional ' + str(notional))
 #         'BP.L',\
 #         'RDSa.AS',\
 #         'RDSa.L']
-rics = ['AAL.L',\
-        'ANTO.L',\
-        'GLEN.L',\
-        'MT.AS',\
-        'RIO.L']
+# rics = ['AAL.L',\
+#         'ANTO.L',\
+#         'GLEN.L',\
+#         'MT.AS',\
+#         'RIO.L']
 
 # compute covariance matrix
 port_mgr = stream_classes.portfolio_manager(rics, nb_decimals)

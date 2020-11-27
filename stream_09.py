@@ -30,12 +30,12 @@ print('inputs:')
 print('nb_decimals ' + str(nb_decimals))
 print('notional ' + str(notional))
 
-rics = ['SAN.MC',\
-        'BBVA.MC',\
-        'SOGN.PA',\
-        'BNPP.PA',\
-        'INGA.AS',\
-        'KBC.BR']
+# rics = ['SAN.MC',\
+#         'BBVA.MC',\
+#         'SOGN.PA',\
+#         'BNPP.PA',\
+#         'INGA.AS',\
+#         'KBC.BR']
 # rics = ['MXNUSD=X',\
 #         'EURUSD=X',\
 #         'GBPUSD=X',\
@@ -57,11 +57,11 @@ rics = ['SAN.MC',\
 #         'BP.L',\
 #         'RDSa.AS',\
 #         'RDSa.L']
-# rics = ['AAL.L',\
-#         'ANTO.L',\
-#         'GLEN.L',\
-#         'MT.AS',\
-#         'RIO.L']
+rics = ['AAL.L',\
+        'ANTO.L',\
+        'GLEN.L',\
+        'MT.AS',\
+        'RIO.L']
 
 # compute covariance matrix
 port_mgr = stream_classes.portfolio_manager(rics, nb_decimals)
@@ -80,7 +80,7 @@ for target_return in returns:
 
 # compute other portfolios
 # black
-label1 = 'markowitz-avg-return' # 'equi-weight'
+label1 = 'markowitz-avg' # 'equi-weight'
 port = port_mgr.compute_portfolio('markowitz', notional)
 x1 = port.volatility_annual
 y1 = port.return_annual
@@ -94,6 +94,11 @@ label3 = 'equi-weight' # 'equi-weight'
 port = port_mgr.compute_portfolio(label3, notional)
 x3 = port.volatility_annual
 y3 = port.return_annual
+# yellow
+label4 = 'markowitz-target' # 'equi-weight'
+port = port_mgr.compute_portfolio('markowitz', notional, target_return=0.23)
+x4 = port.volatility_annual
+y4 = port.return_annual
     
 # plot Efficient Frontier
 plt.figure()
@@ -102,6 +107,7 @@ plt.scatter(volatilities,returns)
 plt.plot(x1, y1, "ok", label=label1) # black
 plt.plot(x2, y2, "or", label=label2) # red
 plt.plot(x3, y3, "oy", label=label3) # yellow
+plt.plot(x4, y4, "*k", label=label4) # yellow
 plt.ylabel('portfolio return')
 plt.xlabel('portfolio volatility')
 plt.grid()
