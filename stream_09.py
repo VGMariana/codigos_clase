@@ -80,7 +80,7 @@ for target_return in returns:
 
 # compute other portfolios
 # black
-label1 = 'markowitz-avg' # 'equi-weight'
+label1 = 'markowitz-avg' # portfolio Markowitz with return = average of returns
 port = port_mgr.compute_portfolio('markowitz', notional)
 x1 = port.volatility_annual
 y1 = port.return_annual
@@ -95,7 +95,7 @@ port = port_mgr.compute_portfolio(label3, notional)
 x3 = port.volatility_annual
 y3 = port.return_annual
 # yellow
-label4 = 'markowitz-target' # 'equi-weight'
+label4 = 'markowitz-target' # portfolio Markowitz with return = target
 port = port_mgr.compute_portfolio('markowitz', notional, target_return=0.23)
 x4 = port.volatility_annual
 y4 = port.return_annual
