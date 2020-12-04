@@ -50,18 +50,27 @@ print('notional ' + str(notional))
 #         'ISP.MI',\
 #         'DBKGn.DE',\
 #         'CBKG.DE']
+rics = ['SGREN.MC',\
+        'VWS.CO',\
+        'TOTF.PA',\
+        'REP.MC',\
+        'BP.L',\
+        'RDSa.AS',\
+        'RDSa.L']
 # rics = ['SGREN.MC',\
-#         'VWS.CO',\
-#         'TOTF.PA',\
+#         'VWS.CO']
+# rics = ['TOTF.PA',\
 #         'REP.MC',\
 #         'BP.L',\
 #         'RDSa.AS',\
 #         'RDSa.L']
-rics = ['AAL.L',\
-        'ANTO.L',\
-        'GLEN.L',\
-        'MT.AS',\
-        'RIO.L']
+# rics = ['AAL.L',\
+#         'ANTO.L',\
+#         'GLEN.L',\
+#         'MT.AS',\
+#         'RIO.L']
+# rics = ['^S&P500',\
+#         '^VIX']
 
 # compute covariance matrix
 port_mgr = stream_classes.portfolio_manager(rics, nb_decimals)
@@ -79,35 +88,39 @@ for target_return in returns:
     counter += 1
 
 # compute other portfolios
-# black
-label1 = 'markowitz-avg' # portfolio Markowitz with return = average of returns
-port = port_mgr.compute_portfolio('markowitz', notional)
-x1 = port.volatility_annual
-y1 = port.return_annual
-# red
+#
+label1 = 'markowitz-avg' # markowitz with average return (default)
+port1 = port_mgr.compute_portfolio('markowitz', notional)
+# label1 = 'min-variance'
+# port1 = port_mgr.compute_portfolio(label1, notional)
+x1 = port1.volatility_annual
+y1 = port1.return_annual
+#
 label2 = 'long-only' # 'long-only' 'min-variance'
-port = port_mgr.compute_portfolio(label2, notional)
-x2 = port.volatility_annual
-y2 = port.return_annual
-# yellow
+port2 = port_mgr.compute_portfolio(label2, notional)
+x2 = port2.volatility_annual
+y2 = port2.return_annual
+#
 label3 = 'equi-weight' # 'equi-weight'
-port = port_mgr.compute_portfolio(label3, notional)
-x3 = port.volatility_annual
-y3 = port.return_annual
-# yellow
-label4 = 'markowitz-target' # portfolio Markowitz with return = target
-port = port_mgr.compute_portfolio('markowitz', notional, target_return=0.23)
-x4 = port.volatility_annual
-y4 = port.return_annual
+port3 = port_mgr.compute_portfolio(label3, notional)
+x3 = port3.volatility_annual
+y3 = port3.return_annual
+#
+# label4 = 'markowitz-target' # portfolio Markowitz with return = target
+# port = port_mgr.compute_portfolio('markowitz', notional, target_return=0.10)
+label4 = 'pca' # max-variance or pca
+port4 = port_mgr.compute_portfolio(label4, notional)
+x4 = port4.volatility_annual
+y4 = port4.return_annual
     
 # plot Efficient Frontier
 plt.figure()
 plt.title('Efficient Frontier for a portfolio including ' + rics[0])
 plt.scatter(volatilities,returns)
-plt.plot(x1, y1, "ok", label=label1) # black
-plt.plot(x2, y2, "or", label=label2) # red
-plt.plot(x3, y3, "oy", label=label3) # yellow
-plt.plot(x4, y4, "*k", label=label4) # yellow
+plt.plot(x1, y1, "ok", label=label1) # black dot
+plt.plot(x2, y2, "or", label=label2) # red dot
+plt.plot(x3, y3, "oy", label=label3) # yellow dot
+plt.plot(x4, y4, "*k", label=label4) # black star
 plt.ylabel('portfolio return')
 plt.xlabel('portfolio volatility')
 plt.grid()
