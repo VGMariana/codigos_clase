@@ -87,8 +87,13 @@ def synchronise_timeseries(benchmark, ric, file_extension='csv'):
     t['date'] = t1_sync['date']
     t['price_1'] = t1_sync['close'] # price benchmark
     t['price_2'] = t2_sync['close'] # price ric
+    
+    ### added previous close ###
+    t['price_1_previous'] = t1_sync['close_previous'] # previous close benchmark
+    t['price_2_previous'] = t2_sync['close_previous'] # previous close ric
+    
     t['return_1'] = t1_sync['return_close'] # return benchmark
-    t['return_2'] = t2_sync['return_close'] #return ric
+    t['return_2'] = t2_sync['return_close'] # return ric
     # compute vectors of returns
     returns_benchmark = t['return_1'].values # variable x
     returns_ric = t['return_2'].values # variable y
