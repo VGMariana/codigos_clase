@@ -29,9 +29,9 @@ backtest = bollinger_bands.backtest()
 backtest.ric_long = 'TOTF.PA'
 backtest.ric_short = 'REP.MC'
 backtest.rolling_days = 20
-backtest.level_1 = 0.8
-backtest.level_2 = 1.6
-backtest.data_cut = 0.7
+backtest.level_1 = 0.7
+backtest.level_2 = 1.2
+backtest.data_cut = 1.0
 backtest.data_type = 'in-sample' # in-sample out-of-sample
 
 
