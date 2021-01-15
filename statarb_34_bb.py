@@ -26,13 +26,13 @@ importlib.reload(bollinger_bands)
 
 # inputs
 backtest = bollinger_bands.backtest()
-backtest.ric_long = 'TOTF.PA'
-backtest.ric_short = 'REP.MC'
-backtest.rolling_days = 20
-backtest.level_1 = 0.7
-backtest.level_2 = 1.2
-backtest.data_cut = 1.0
-backtest.data_type = 'in-sample' # in-sample out-of-sample
+backtest.ric_long = 'VWS.CO'
+backtest.ric_short = 'SGREN.MC'
+backtest.rolling_days = 35
+backtest.level_1 = 0.65
+backtest.level_2 = 1.3
+backtest.data_cut = 0.7
+backtest.data_type = 'out-of-sample' # in-sample out-of-sample
 
 
 # load data

@@ -26,13 +26,16 @@ importlib.reload(bollinger_bands)
 
 # inputs
 backtest = bollinger_bands.backtest()
-backtest.ric_long = 'TOTF.PA'
-backtest.ric_short = 'REP.MC'
+backtest.ric_long = 'VWS.CO'
+backtest.ric_short = 'SGREN.MC'
 backtest.data_cut = 0.7
 backtest.data_type = 'in-sample' # in-sample out-of-sample
 
-list_level_1 = [0.5,0.6,0.7,0.8,0.9]
-list_level_2 = [1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8]
+# list_level_1 = [0.5,0.6,0.7,0.8,0.9]
+# list_level_2 = [1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8]
+
+list_level_1 = [np.round(x,2) for x in np.linspace(0.5, 0.75, num=6)]
+list_level_2 = [np.round(x,2) for x in np.linspace(1.0, 1.5, num=11)]
 
 mtx_sharpe = np.zeros((len(list_level_1),len(list_level_2)))
 mtx_nb_trades = np.zeros((len(list_level_1),len(list_level_2)))
@@ -42,7 +45,7 @@ for level_1 in list_level_1:
     l2 = 0
     for level_2 in list_level_2:
         # parameters to optimise
-        backtest.rolling_days = 20
+        backtest.rolling_days = 35
         backtest.level_1 = level_1
         backtest.level_2 = level_2
         # load data
@@ -75,3 +78,4 @@ df_trades = pd.concat([df1,df2], axis=1) # axis=0 for rows, axis=1 for columns
 df_trades = df_trades.dropna()
 df_trades = df_trades.reset_index(drop=True)
 
+print('Max Sharpe is ' + str(np.max(mtx_sharpe)))
