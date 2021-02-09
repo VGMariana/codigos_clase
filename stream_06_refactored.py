@@ -36,10 +36,10 @@ hedge_rics = ['SAN.MC','^FCHI','^GDAXI']
 delta = 10
 
 # compute optimal hedge
-hedger = stream_classes.hedge_manager(ric, benchmark, hedge_rics, delta)
+hedger = stream_classes.hedge_manager(benchmark, ric, hedge_rics, delta)
 hedger.load_inputs(bool_print=True)
 # hedger.compute_exact(bool_print=True)
 hedger.compute_numerical(epsilon=0.01, bool_print=True)
-optimal_hedge = hedger.dataframe
+# optimal_hedge = hedger.dataframe
 
       
